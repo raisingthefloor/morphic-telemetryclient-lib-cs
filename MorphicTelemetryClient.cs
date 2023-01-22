@@ -103,6 +103,11 @@ public class MorphicTelemetryClient : IDisposable
     private object _mqttSendEventsTimerLock = new();
     //
     private long? _mqttSendEventsTriggerTime;
+    private void ClearMqttSendEventsTriggerTime()
+    {
+        _mqttSendEventsTriggerTime = null;
+        _mqttSendEventsTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+    }
     private void SetMqttSendEventsTriggerTime(long dueTime, bool onlyIfEarlier = false)
     {
         var triggerTimeSpan = TimeSpan.FromMilliseconds(Math.Max(dueTime, 0));
@@ -643,6 +648,11 @@ public class MorphicTelemetryClient : IDisposable
         var semaphoreAvailable = await _mqttSendEventsTimerCallbackReentrySemaphore.WaitAsync(0);
         if (semaphoreAvailable == true) 
         {
+            // clear our trigger time, as our callback has now been triggered; this trigger will get re-armed again by this function if necessary (or by an action event, separately)
+            // NOTE: we clear the time here, before doing any processing, to ensure that we process our state machine even if a pending trigger event is lost
+            // NOTE: this must be done whether the semaphore was available or not, so make sure we sync this code in both places
+            this.ClearMqttSendEventsTriggerTime();
+
             // execute our state machine logic
             try
             {
@@ -829,6 +839,10 @@ public class MorphicTelemetryClient : IDisposable
         } 
         else
         {
+            // clear our trigger time; we'll re-set this in a moment (but we need to clear it out so that re-setting doesn't get confused because it thinks that the trigger is already set)
+            // NOTE: this must be done whether the semaphore was available or not, so make sure we sync this code in both places
+            this.ClearMqttSendEventsTriggerTime();
+
             // if our timer is already executing, then reconfigure our timer to fire in five seconds; this will effectively wait no more than five seconds to re-fire after the previous call completes (even if multiple changes get fired in rapid succession)
             retryTriggerTimeSpanDueToReentryProtection = new TimeSpan(0, 0, 5);
         }
@@ -858,13 +872,13 @@ public class MorphicTelemetryClient : IDisposable
         }
 
         // if we have a mandatory timestamp we must wait before trying to reconnect, make sure we call the state machine again when that time is triggered
-        long? mandatoryMinimumBackoffInterval = this.MandatoryMinimumBackoffInterval;
-        if (mandatoryMinimumBackoffInterval is not null)
+        long? currentBackoffTimestamp = this.MandatoryMinimumBackoffTimestamp;
+        if (currentBackoffTimestamp is not null)
         {
-            TimeSpan mandatoryMinimumBackoffTimespan = TimeSpan.FromMilliseconds((double)mandatoryMinimumBackoffInterval);
-            if (runStateMachineAgainAfterTimespan is null || mandatoryMinimumBackoffTimespan < runStateMachineAgainAfterTimespan!.Value)
+            TimeSpan currentBackoffTimespan = TimeSpan.FromMilliseconds(currentBackoffTimestamp!.Value - (long)_stopwatchSinceInitialization.ElapsedMilliseconds);
+            if (runStateMachineAgainAfterTimespan is null || currentBackoffTimespan < runStateMachineAgainAfterTimespan!.Value)
             {
-                runStateMachineAgainAfterTimespan = mandatoryMinimumBackoffTimespan;
+                runStateMachineAgainAfterTimespan = currentBackoffTimespan;
             }
         }
 
