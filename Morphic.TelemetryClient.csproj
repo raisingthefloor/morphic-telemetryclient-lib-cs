@@ -7,7 +7,7 @@
     <Platforms>x86;x64;ARM64</Platforms>
     <Authors>Raising the Floor - US, Inc.</Authors>
     <Company>Raising the Floor - US, Inc.</Company>
-    <Product>Morphic Core Support Library</Product>
+    <Product>Morphic telemetry client library</Product>
     <Copyright>Copyright 2021-2023 Raising the Floor - US, Inc.</Copyright>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/raisingthefloor/morphic-telemetryclient-lib-cs</RepositoryUrl>
