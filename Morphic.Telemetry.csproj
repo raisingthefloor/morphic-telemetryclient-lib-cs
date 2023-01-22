@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Version>2.0.0</Version>
+    <Nullable>enable</Nullable>
+    <Platforms>x86;x64;ARM64</Platforms>
+    <Authors>Raising the Floor - US, Inc.</Authors>
+    <Company>Raising the Floor - US, Inc.</Company>
+    <Product>Morphic Core Support Library</Product>
+    <Copyright>Copyright 2021-2023 Raising the Floor - US, Inc.</Copyright>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/raisingthefloor/morphic-telemetryclient-lib-cs</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Morphic.Collections.Persisted" Version="1.0.0" />
+    <PackageReference Include="Morphic.Core" Version="1.2.0" />
+    <PackageReference Include="MQTTnet" Version="4.1.4.563" />
+  </ItemGroup>
+
+</Project>

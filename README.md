@@ -1,2 +1,2 @@
 # morphic-telemetryclient-lib-cs
-Morphic telemetry client library
+Morphic telemetry client library (C#)
