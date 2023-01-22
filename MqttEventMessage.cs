@@ -28,7 +28,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Morphic.Telemetry;
+namespace Morphic.TelemetryClient;
 
 internal struct MqttEventMessage
 {

@@ -37,7 +37,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Morphic.Telemetry;
+namespace Morphic.TelemetryClient;
 
 public class MorphicTelemetryClient : IDisposable
 {
