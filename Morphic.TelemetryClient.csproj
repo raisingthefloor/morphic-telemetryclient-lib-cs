@@ -2,9 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Version>2.0.0</Version>
+    <Version>2.0.2</Version>
     <Nullable>enable</Nullable>
-    <Platforms>x86;x64;ARM64</Platforms>
     <Authors>Raising the Floor - US, Inc.</Authors>
     <Company>Raising the Floor - US, Inc.</Company>
     <Product>Morphic telemetry client library</Product>
